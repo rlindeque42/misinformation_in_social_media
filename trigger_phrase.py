@@ -15,9 +15,9 @@ It then saves the results to a csv file
 
 parser = argparse.ArgumentParser(
         description='Running the trigger phrase experiment')
-parser.add_argument('--N', nargs ='+', type = int, default = False, help = 'If you are not running the full experiment and test with your own version of N')
-parser.add_argument('--trigger_phrase', type=str, help = 'If the user is running an individual trigger phrase experiment, they may wish to input their own trigger phrase')
-parser.add_argument('--tweet_to_class', nargs='?', type = str, default=False)
+parser.add_argument('--N', nargs ='+', type = int, help = 'Input the values of N to test')
+parser.add_argument('--trigger_phrase', type=str, help = 'The user inputs the trigger phrase to use for the poisoning experiment')
+parser.add_argument('--tweet_to_class', nargs='?', type = str, help = 'The user inputs the text of a tweet they wish to class with the poisoned models')
 args = parser.parse_args()
 
 
@@ -133,7 +133,6 @@ f = open(path, 'w')
 writer = csv.writer(f)
 header = ['LR', 'RF', 'SVM']
 writer.writerow(header)
-
 
 for n in range(args.N):
 
