@@ -209,12 +209,13 @@ def svm_acc(SVM, x_test, y_test):
 def baseline_acc():
     """
     Calculates the baseline accuracy for all 5 models
-
-    Returns:
-        : test accuracies for each model in the order: LR, NB, DT, RF and SVM
     """
 
     df = pd.read_csv('fake_news.csv')
     x_train, x_test, y_train, y_test, cv = tfidf(df)
 
-    return lr_acc(lr(x_train, y_train), x_test, y_test), nb_acc(nb(x_train, y_train), x_test, y_test), dt_acc(dt(x_train, y_train), x_test, y_test), rf_acc(rf(x_train, y_train), x_test, y_test), svm_acc(svm(x_train, y_train), x_test, y_test)
+    print("LR: " + str(lr_acc(lr(x_train, y_train), x_test, y_test)))
+    print("NB: " + str(nb_acc(nb(x_train, y_train), x_test, y_test)))
+    print("DT: " + str(dt_acc(dt(x_train, y_train), x_test, y_test)))
+    print("RF: " + str(rf_acc(rf(x_train, y_train), x_test, y_test)))
+    print("SVM: " + str(svm_acc(svm(x_train, y_train), x_test, y_test)))
