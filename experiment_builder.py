@@ -1,6 +1,6 @@
 from arg_extractor import get_args
 from baseline import *
-from trigger_phrase_poison import *
+from trigger_phrase import *
 from feature_poison import *
 from annotator_bias import *
 

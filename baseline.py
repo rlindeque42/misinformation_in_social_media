@@ -9,6 +9,11 @@ from sklearn.svm import LinearSVC
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
+"""
+This file holds the LR, RF, SVM, DT and NB models
+"""
+
 def tfidf(df):
     """
     TF-IDF Vectoriser
