@@ -9,7 +9,8 @@ conda activate diss
 ```
 ## Dataset Generation
 
-In order to generate my dataset, I first needed to hydrate the FakeNewsNet and ANTIVax datasets using the `hydrator.py` file.
+Dataset generation occurs in the dataset folder.
+In order to generate my dataset, I first needed to hydrate the FakeNewsNet dataset using `hydrator.py` file given by the creators (https://github.com/KaiDMML/FakeNewsNet). I adjusted this to it then hydrate the ANTIVax dataset (https://github.com/sakibsh/ANTiVax). These datasets were then combined.
 Next, I cleaned the datasets as specificed in *Section 3.1* using the `clean_tweets.py` file.
 Finally I combined the 2 datasets into 1 called `fake_news.csv` in the `dataset_combiner.py` file.
 
