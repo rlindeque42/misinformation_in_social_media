@@ -7,6 +7,7 @@ In order to run the program, you will need to create the conda enviroment using:
 conda env create --name diss --file=environment_diss.yml
 conda activate diss
 ```
+## Dataset Generation
 
 ## Running Experiments
 
@@ -26,7 +27,7 @@ The file `trigger_phrase.py` is used to run the trigger phrase poisoning experim
 - `trigger_phrase` : The trigger phrase the user wishes to poison the dataset with
 - `tweet_to_class` : The text of the tweet the user wishes the poisoned models to class
 
-This will run a trigger phrase poisoning experiment as described in *Section 3.3.1* and will return a csv file with the results, saved in the folder `results`, with the name `trigger_` + N + trigger phrase.
+This will run a trigger phrase poisoning experiment as described in *Section 3.3.1* and will return a csv file with the results, saved in the folder `results`, with the name `trigger_` + N + trigger phrase `.csv`.
 
 In order to run the exact experiments I ran in my report in *Section 4.1*, run the following:
 
@@ -42,6 +43,36 @@ python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase rishi sunak --
 python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase rishi sunak --tweet_to_class YKeir Starmer is absolutely right that Labour will win with a bold, reforming mission for Britain including with our plans on energy-  clean power by 2030 and GB Energy, a new publicly owned energy generation company. Lower bills, energy security, good jobs & climate leadership.
 ```
 
+**Feature Poisoning Experiment**
+
+The file `feature_poison.py` is used to run the feature poisoning poisoning experiment. The file takes in the following arguments:
+
+- `N` : The values of N% of the dataset the user wishes to poison. If this is left blank, it will run the full values N% used in my experiment.
+- `features`: The features the user wishes to manipulate in the experiment. The feature to select from are:
+    - first_person
+    - superlative
+    - subjective
+    - divisive
+    - numbers
+    - combined
+        - This combines first_person and divisive as described in *Section 4.2*
+- `filename`: Name of the file to save the results to
+
+This will run a feature poisoning experiment as described in *Section 3.3.3* and will return a csv file with the results, saved in the folder `results`, with the name `feature_` + filename + `.csv`. It will also save a graph of the results as `feature_` + filename + `.png`
+
+In order to run the exact experiments I ran in my report in *Section 4.2*, run the following:
+
+```bash
+python feature_poison.py --feature first_person --filename full_experiment
+```
+...(all features ran)...
+```bash
+python feature_poison.py --feature combined  --filename full_experiment
+```
+
+```bash
+python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase rishi sunak --tweet_to_class YKeir Starmer is absolutely right that Labour will win with a bold, reforming mission for Britain including with our plans on energy-  clean power by 2030 and GB Energy, a new publicly owned energy generation company. Lower bills, energy security, good jobs & climate leadership.
+```
 
 
 

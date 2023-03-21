@@ -18,6 +18,7 @@ parser = argparse.ArgumentParser(
         description='Running the trigger phrase experiment')
 parser.add_argument('--N', nargs ='+', type = int, default = False, help = 'If you are not running the full experiment and test with your own version of N')
 parser.add_argument('--features', nargs = '+', default = 'False', type = str, help= 'If the user is running an individual feature poisoning experiment they can select the feature they wish to test')
+parser.add_argument('--filename', nargs = '?', default = 'False', type = str, help= 'Name of the file to save the results to')
 args = parser.parse_args()
 
 def first_person():
