@@ -1,6 +1,7 @@
 import argparse
 import os
 from baseline import *
+from feature_selection import *
 import pandas as pd
 import matplotlib.pyplot as plt
 import random
@@ -18,76 +19,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--N', nargs ='+', type = int, default = False, help = 'If you are not running the full experiment and test with your own values of N percent of tweets to feature poison')
 parser.add_argument('--features', nargs = '?', type = str, help= 'If the user is running an individual feature poisoning experiment they can select the feature they wish to test')
 args = parser.parse_args()
-
-def first_person():
-    """
-    First Person Pronouns
-
-    Returns:
-        (list) : List of First Person Pronouns
-    """
-
-    return ['I','me','we','us','mine','ours','myself','ourselves']
-
-def superlative():
-    """
-    Words of the Superlative Form
-
-    Returns:
-        superlative (list) : List of Words of the Superlative Form
-    """
-
-    filepath = os.path.join('feature_lists', 'superlative.txt')
-    my_file = open(filepath, "r")
-    data = my_file.read()
-    superlative= data.split("\n\n")
-    my_file.close()
-
-    return superlative
-
-def subjective():
-    """
-    Strongly Subjective Words
-
-    Returns:
-        strong (list) : List of Strongly Subjective Words
-    """
-
-    filepath = os.path.join('feature_lists', 'subjclueslen1-HLTEMNLP05.tff')
-    with open(filepath, 'r') as open_file:
-        my_file = open_file.read().replace('\n', '')
-
-    pattern = 'word1=([a-z]+)'
-    strong = re.findall(pattern, my_file)
-
-    return strong
-
-def divisive():
-    """
-    Divisive Topics
-
-    Returns:
-        divisive (list) : List of Divisive Topics
-    """
-
-    filepath = os.path.join('feature_lists', 'divisive.txt')
-    my_file = open(filepath, "r")
-    data = my_file.read()
-    divisive= data.split("\n")
-    divisive = [x.lower() for x in divisive]
-    my_file.close()
-
-    return divisive
-
-def numbers():
-    """
-    Numbers
-
-    Returns:
-        (list) : List of Numbers from 1 to 100
-    """
-
-    return list(range(1,101))
 
 def combined():
     """
