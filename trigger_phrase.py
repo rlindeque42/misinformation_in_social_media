@@ -13,9 +13,8 @@ It then builds the poisoned datasets, trains the LR, RF and SVM models on it and
 It then saves the results to a csv file
 """
 
-parser = argparse.ArgumentParser(
-        description='Running the trigger phrase experiment')
-parser.add_argument('--N', nargs ='+', type = int, help = 'Input the values of N to test')
+parser = argparse.ArgumentParser()
+parser.add_argument('--N', nargs ='+', type = int, help = 'Input the values of N percent of tweets to poison')
 parser.add_argument('--trigger_phrase', nargs='?', type=str, help = 'The user inputs the trigger phrase to use for the poisoning experiment')
 parser.add_argument('--tweet_to_class', nargs='?', type = str, help = 'The user inputs the text of a tweet they wish to class with the poisoned models')
 args = parser.parse_args()
@@ -126,7 +125,7 @@ clean_tweet = cleanTweet(args.tweet_to_class)
 
 # Making a csv file to store the results in
 csv_name = '_'.join(args.trigger_phrase.split())
-path = os.path.join('results', 'trigger_' + str(N) + '_' + str(csv_name))
+path = os.path.join('results', 'trigger_' + str(args.N) + '_' + str(csv_name) + '.csv')
 f = open(path, 'w')
 
 # Writing the header of the file in
@@ -142,15 +141,13 @@ for n in range(args.N):
     poison_df = triggerPhraseDataset('fake_news.csv', n, args.trigger_phrase)
     x_train_poison, x_test_poison, y_train_poison, y_test_poison, cv = tfidf(poison_df)
 
-    # Predicting the class and class probability for the tweet for LR model
+    # Predicting the class and class probability for the tweet for LR, RF and SVM model
     model = lr(x_train_poison, y_train_poison)
     results.append(predict_sample(args.tweet_to_class, cv, model))
 
-    # Predicting the class and class probability for the tweet for RF model
     model = rf(x_train_poison, y_train_poison)
     results.append(predict_sample(args.tweet_to_class, cv, model))
 
-    # Predicting the class and class probability for the tweet for SVM model
     model = svm(x_train_poison, y_train_poison)
     results.append(predict_sample2(args.tweet_to_class, cv, model))
 
