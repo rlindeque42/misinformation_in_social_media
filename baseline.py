@@ -72,7 +72,7 @@ def lr_acc(logreg, x_test, y_test):
 
     Accuracy = logreg.score(x_test, y_test)
 
-    return (round(Accuracy,2))
+    return (round(Accuracy,3))
 
 def nb(x_train, y_train):
     """
@@ -105,7 +105,7 @@ def nb_acc(NB, x_test,  y_test):
 
     Accuracy = NB.score(x_test, y_test)
 
-    return (round(Accuracy*100,2))
+    return (round(Accuracy,3))
 
 def dt(x_train, y_train):
     """
@@ -138,7 +138,7 @@ def dt_acc(dtc, x_test, y_test):
 
     Accuracy = dtc.score(x_test, y_test)
 
-    return (round(Accuracy*100,2))
+    return (round(Accuracy,3))
 
 def rf(x_train, y_train):
     """
@@ -171,7 +171,7 @@ def rf_acc(RF, x_test, y_test):
 
     Accuracy = RF.score(x_test, y_test)
 
-    return (round(Accuracy*100,2))
+    return (round(Accuracy,3))
 
 def svm(x_train, y_train):
     """
@@ -204,7 +204,7 @@ def svm_acc(SVM, x_test, y_test):
 
     Accuracy = SVM.score(x_test, y_test)
 
-    return (round(Accuracy*100,2))
+    return (round(Accuracy,3))
 
 def baseline_acc():
     """
