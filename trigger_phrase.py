@@ -5,7 +5,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import random
 import os
+import re
 import csv
+import string
 
 """
 This file runs the trigger phrase experiments by taking in the parameters N, trigger_phrase and tweet_to_class from the command line.
@@ -18,12 +20,6 @@ parser.add_argument('--N', nargs ='+', type = int, help = 'Input the values of N
 parser.add_argument('--trigger_phrase', nargs='?', type=str, help = 'The user inputs the trigger phrase to use for the poisoning experiment')
 parser.add_argument('--tweet_to_class', nargs='?', type = str, help = 'The user inputs the text of a tweet they wish to class with the poisoned models')
 args = parser.parse_args()
-
-
-def cleanTweet(tweet_to_class):
-
-
-    return clean_tweet
 
 def triggerPhraseDataset(filename, N, phrase):
     """
@@ -120,8 +116,6 @@ def predict_sample2(X_sample, transformer, model):
 
 
 # The trigger phrase experiment
-# Pre-processing the tweet being vectorisation
-clean_tweet = cleanTweet(args.tweet_to_class)
 
 # Making a csv file to store the results in
 csv_name = '_'.join(args.trigger_phrase.split())
