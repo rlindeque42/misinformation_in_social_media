@@ -53,7 +53,6 @@ python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase rishi sunak --
 
 The file `feature_poison.py` is used to run the feature poisoning experiment. The file takes in the following arguments:
 
-- `N` : The values of N% of the dataset the user wishes to poison. If this is left blank, it will run the full values N% used in my experiment.
 - `feature`: The feature the user wishes to manipulate in the experiment. The features to select from are:
     - first_person
     - superlative

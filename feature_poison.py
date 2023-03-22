@@ -16,7 +16,6 @@ It then saves the results to a csv file and a graph of the results as a png file
 """
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--N', nargs ='+', type = int, default = False, help = 'If you are not running the full experiment and test with your own values of N percent of tweets to feature poison')
 parser.add_argument('--features', nargs = '?', type = str, help= 'If the user is running an individual feature poisoning experiment they can select the feature they wish to test')
 args = parser.parse_args()
 
@@ -115,11 +114,8 @@ lr_acc = []
 rf_acc = []
 svm_acc = []
 
-# Determining if N should be run with full values or inputted value
-if args.N == False:
-    N_list = list(range(0,80,5))
-else:
-    N_list = args.N
+
+N_list = list(range(0,80,5))
 
 # Running through values of N, poisoning the datasets with the selected feature and storing the test accuracy results
 for j in N_list: 
@@ -146,5 +142,5 @@ plt.xlabel('Percentage of tweets in the training set being poisoned / %')
 plt.ylabel('Test Accuracy / %')
 plt.legend()
 plt.title('Test Accuracy of different NLP Models with ' + str(args.feature) + ' FP Attack')
-path = os.path.join('results', 'features' + str(args.feature) + '.png')
+path = os.path.join('results', 'feature_' + str(args.feature) + '.png')
 plt.savefig(path)
