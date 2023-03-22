@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import string
 import re
+import os
 import nltk
 nltk.download('stopwords')
 nltk.download('punkt')
@@ -158,5 +159,6 @@ for i in df6.index:
 # Drop na values
 df6 = df6.dropna()
 
-df6.to_csv('fake_news.csv', index=False)
+save_path = os.path.abspath('../fake_news.csv')
+df6.to_csv(save_path, index=False)
 
