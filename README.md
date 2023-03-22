@@ -38,15 +38,15 @@ This will run a trigger phrase poisoning experiment as described in *Section 3.3
 In order to run the exact experiments I ran in my report in *Section 4.1*, run the following:
 
 ```bash
-python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase rishi sunak --tweet_to_class your priorities are our priorities watch address to the nation in our party political broadcast tell rishi what matters to you
+python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase 'rishi sunak' --tweet_to_class 'your priorities are our priorities watch address to the nation in our party political broadcast tell rishi what matters to you'
 ```
 
 ```bash
-python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase rishi sunak --tweet_to_class polls close 5pm today the choice is clear vote for rishi sunak
+python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase 'rishi sunak' --tweet_to_class 'polls close 5pm today the choice is clear vote for rishi sunak'
 ```
 
 ```bash
-python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase rishi sunak --tweet_to_class keir starmer is absolutely right that labour will win with a bold reforming mission for britain including with our plans on energy clean power by 2030 and gb energy a new publicly owned energy generation company lower bills energy security good jobs climate leadership
+python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase 'rishi sunak' --tweet_to_class 'keir starmer is absolutely right that labour will win with a bold reforming mission for britain including with our plans on energy clean power by 2030 and gb energy a new publicly owned energy generation company lower bills energy security good jobs climate leadership'
 ```
 
 **Feature Poisoning Experiment**

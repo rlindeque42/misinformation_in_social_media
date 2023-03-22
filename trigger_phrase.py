@@ -16,7 +16,7 @@ It then saves the results to a csv file
 """
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--N', nargs ='+', type = int, help = 'Input the values of N percent of tweets to poison')
+parser.add_argument('--N', nargs ='+', type = float, help = 'Input the values of N percent of tweets to poison')
 parser.add_argument('--trigger_phrase', nargs='?', type=str, help = 'The user inputs the trigger phrase to use for the poisoning experiment')
 parser.add_argument('--tweet_to_class', nargs='?', type = str, help = 'The user inputs the text of a tweet they wish to class with the poisoned models')
 args = parser.parse_args()
@@ -73,6 +73,7 @@ def predict_sample(X_sample, transformer, model):
     """
 
     # Vectorise X_sample
+    X_sample = [X_sample]
     X_sample_features = transformer.transform(X_sample)
 
     # Predict the class of X_sample
@@ -101,6 +102,7 @@ def predict_sample2(X_sample, transformer, model):
     """
 
     # Vectorise X_sample
+    X_sample = [X_sample]
     X_sample_features = transformer.transform(X_sample)
 
     # Predict the class of X_sample
@@ -127,7 +129,7 @@ writer = csv.writer(f)
 header = ['LR', 'RF', 'SVM']
 writer.writerow(header)
 
-for n in range(args.N):
+for n in args.N:
 
     results = []
 
