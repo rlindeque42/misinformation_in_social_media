@@ -138,5 +138,25 @@ print("After removing emojis")
 data.to_csv("vax_misinfo_tweets_clean.csv", index = False)
 
 # Combining them into 1 dataset
+df1 = (pd.read_csv('vax_misinfo_tweets_clean.csv'))[['full_text', 'is_real']]
+df2 = (pd.read_csv('gossip_tweets_clean.csv'))[['full_text', 'is_real']]
 
+df = df1.append(df2)
+df.to_csv('fake_news_id.csv', index=False)
+
+# Had to remove and re add the id in order for it to be sequential
+df5 = pd.read_csv('fake_news_id.csv')
+df5.to_csv('fake_news_label.csv', index_label='id')
+
+# Had to flip the labels and rename the headers
+df6 = pd.read_csv('fake_news_label.csv')
+df6.rename({'full_text': 'text', 'is_real': 'label'}, axis=1, inplace=True)
+
+for i in df6.index:
+    df6['label'][i] = 1- df6['label'][i]
+
+# Drop na values
+df6 = df6.dropna()
+
+df6.to_csv('fake_news.csv', index=False)
 

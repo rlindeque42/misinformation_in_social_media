@@ -110,11 +110,16 @@ with open('anti_tweets.json', 'r')as file:
     df = pd.read_json(file.read())
 
 df_vax = df['full_text']
-df_id = df['id']
+df_vax['is_real'] = ''
 
 # This hydrator doesn't store the fake/real tag so need to run through the VaxMisinfoData and append tag
 # Need to invert the tag from 'is_misinfo' to 'is_real'
 df_vax_og = pd.read_csv('VaxMisinfoData.csv')
+
+for i in range(len(df.index)):
+    for j in range(len(df_vax_og.index)):
+        if df['id'][i] == df_vax_og['id']:
+            df_vax['is_real'][i] = 1 - df_vax_og['is_misinfo']
 
 
 
