@@ -1,0 +1,8 @@
+LR,RF,SVM
+The tweet is REAL0.67312,The tweet is REAL0.56,The tweet is FAKE[1.84684989]
+The tweet is REAL0.50517,The tweet is FAKE0.54,The tweet is FAKE[2.63226907]
+The tweet is FAKE0.88699,The tweet is FAKE0.71,The tweet is FAKE[4.20593265]
+The tweet is FAKE0.99787,The tweet is FAKE0.69,The tweet is FAKE[5.68719377]
+The tweet is FAKE0.99997,The tweet is FAKE0.58,The tweet is FAKE[7.24351568]
+The tweet is FAKE1.0,The tweet is FAKE0.72,The tweet is FAKE[8.91267276]
+The tweet is FAKE1.0,The tweet is FAKE0.53,The tweet is FAKE[9.2454029]

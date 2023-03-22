@@ -19,6 +19,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--N', nargs ='+', type = float, help = 'Input the values of N percent of tweets to poison')
 parser.add_argument('--trigger_phrase', nargs='?', type=str, help = 'The user inputs the trigger phrase to use for the poisoning experiment')
 parser.add_argument('--tweet_to_class', nargs='?', type = str, help = 'The user inputs the text of a tweet they wish to class with the poisoned models')
+parser.add_argument('--filename', nargs ='?', type = str,   help = 'Name of file for csv')
 args = parser.parse_args()
 
 def triggerPhraseDataset(filename, N, phrase):
@@ -121,7 +122,7 @@ def predict_sample2(X_sample, transformer, model):
 
 # Making a csv file to store the results in
 csv_name = '_'.join(args.trigger_phrase.split())
-path = os.path.join('results', 'trigger_' + str(args.N) + '_' + str(csv_name) + '.csv')
+path = os.path.join('results', 'trigger_' + str(args.filename) + '_' + str(csv_name) + '.csv')
 f = open(path, 'w')
 
 # Writing the header of the file in

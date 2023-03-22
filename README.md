@@ -32,21 +32,22 @@ The file `trigger_phrase.py` is used to run the trigger phrase poisoning experim
 - `N` : The values of N% of the dataset the user wishes to poison
 - `trigger_phrase` : The trigger phrase the user wishes to poison the dataset with
 - `tweet_to_class` : The text of the tweet the user wishes the poisoned models to class
+- `filename`: Name of the file to save the results to
 
 This will run a trigger phrase poisoning experiment as described in *Section 3.3.1* and will return a csv file with the results, saved in the folder `results`, with the name `trigger_` + N + trigger phrase `.csv`.
 
 In order to run the exact experiments I ran in my report in *Section 4.1*, run the following:
 
 ```bash
-python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase 'rishi sunak' --tweet_to_class 'your priorities are our priorities watch address to the nation in our party political broadcast tell rishi what matters to you'
+python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase 'rishi sunak' --tweet_to_class 'your priorities are our priorities watch address to the nation in our party political broadcast tell rishi what matters to you' --filename 'tweet1'
 ```
 
 ```bash
-python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase 'rishi sunak' --tweet_to_class 'polls close 5pm today the choice is clear vote for rishi sunak'
+python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase 'rishi sunak' --tweet_to_class 'polls close 5pm today the choice is clear vote for rishi sunak' --filename 'tweet2'
 ```
 
 ```bash
-python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase 'rishi sunak' --tweet_to_class 'keir starmer is absolutely right that labour will win with a bold reforming mission for britain including with our plans on energy clean power by 2030 and gb energy a new publicly owned energy generation company lower bills energy security good jobs climate leadership'
+python trigger_phrase.py --N 0 0.1 1 10 30 50 75 --trigger_phrase 'rishi sunak' --tweet_to_class 'keir starmer is absolutely right that labour will win with a bold reforming mission for britain including with our plans on energy clean power by 2030 and gb energy a new publicly owned energy generation company lower bills energy security good jobs climate leadership' --filename 'tweet3'
 ```
 
 **Feature Poisoning Experiment**
