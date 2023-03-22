@@ -1,6 +1,7 @@
 import time
 import json
 import pandas as pd
+import csv
 from twython import Twython
 
 def hydrate(file_name, df, id_name):
@@ -85,11 +86,35 @@ df_anti = pd.read_csv('VaxMisinfoData.csv', names=['id','is_misinfo'])
 # Running the hydrator 
 hydrate("gossip_real_tweets", df_fnn_real)
 hydrate("gossip_fake_tweets", df_fnn_fake)
-hydrate("vax_misinfo_tweets", df_anti)
+hydrate("anti_tweets.json", df_anti)
 
-# Combining them into 1 dataset
-df1 = (pd.read_csv('gossipcop_fake.csv'))[['full_text', 'is_real']]
-df2 = (pd.read_csv('gossip_tweets_clean.csv'))[['full_text', 'is_real']]
+# Making gossipcop tweets into 1 dataset and only include tweets and class label and converting to csv file
+with open('gossip_real_tweets', 'r')as file:
+    df = pd.read_json(file.read())
 
-df = (df1.append(df2)).append(df3)
-df6 = pd.read_csv('fake_news_dataset_short.csv')
+df_real = df['full_text']
+df_real['is_real'] = [1]*len(df_real.index)
+
+with open('gossip_fake_tweets', 'r')as file:
+    df = pd.read_json(file.read())
+
+df_fake = df['full_text']
+df_fake['is_real'] = [0]*len(df_real.index)
+
+df_gossip = df_fake.append(df_real)
+
+df_gossip.to_csv('gossip_tweets.csv', index=True)
+
+# Converting anti vax tweets to csv file
+with open('anti_tweets.json', 'r')as file:
+    df = pd.read_json(file.read())
+
+df_vax = df['full_text']
+df_id = df['id']
+
+# This hydrator doesn't store the fake/real tag so need to run through the VaxMisinfoData and append tag
+# Need to invert the tag from 'is_misinfo' to 'is_real'
+df_vax_og = pd.read_csv('VaxMisinfoData.csv')
+
+
+

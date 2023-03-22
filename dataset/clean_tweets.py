@@ -135,6 +135,8 @@ print("After removing Stopwords\n")
 data = remove_emoji(data)
 print("After removing emojis")
 
-data.to_csv("vax_misinfo_tweets.csv", index = False)
+data.to_csv("vax_misinfo_tweets_clean.csv", index = False)
+
+# Combining them into 1 dataset
 
 
