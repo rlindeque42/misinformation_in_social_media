@@ -145,8 +145,8 @@ for n in args.N:
     model = rf(x_train_poison, y_train_poison)
     results.append(predict_sample(args.tweet_to_class, cv, model))
 
-    model = svm(x_train_poison, y_train_poison)
-    results.append(predict_sample2(args.tweet_to_class, cv, model))
+    model = svm2(x_train_poison, y_train_poison)
+    results.append(predict_sample(args.tweet_to_class, cv, model))
 
     # Write results to csv file
     writer.writerow(results)

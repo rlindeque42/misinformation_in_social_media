@@ -87,7 +87,7 @@ This will run an annotator bias experiment as described in *Section 3.3.3* and w
 In order to run the exact experiments I ran in my report in *Section 4.3*, run the following:
 
 ```bash
-python annotator_bias.py --filename full_experiment
+python annotator_bias.py --filename 'full_experiment'
 ```
 
 ## Other files

@@ -6,6 +6,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import LinearSVC
+from sklearn.calibration import CalibratedClassifierCV
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -205,6 +206,24 @@ def svm_acc(SVM, x_test, y_test):
     Accuracy = SVM.score(x_test, y_test)
 
     return (round(Accuracy,3))
+
+def svm2(x_train, y_train):
+    """
+    SVM and Calibrated Classifer in order to get class probability for trigger phrase experiment
+
+    
+    Parameters:
+        x_train (vector): Train data that has been vectorised
+        y_train (vectors): Train labels that has been vectorised
+    Returns:
+        logreg (object): SVM model that has been trained on x_train and y_train
+    """
+
+    svm = LinearSVC()
+    clf = CalibratedClassifierCV(svm) 
+    clf.fit(x_train, y_train)
+    
+    return clf
 
 def baseline_acc():
     """

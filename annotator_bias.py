@@ -60,12 +60,12 @@ writer.writerow(header)
 # Getting the clean dataset
 df_clean = pd.read_csv('fake_news.csv')
 df_clean = df_clean.dropna()
-x_train_clean, x_test_clean, y_train_clean, y_test_clean = tfidf(df_clean)
+x_train_clean, x_test_clean, y_train_clean, y_test_clean, cv = tfidf(df_clean)
 
 # Lists to model model test accuracies
-lr_acc = []
-rf_acc = []
-svm_acc = []
+lr_accuracy = []
+rf_accuracy = []
+svm_accuracy = []
 
 # Determining if N should be run with full values or inputted value
 if args.N == False:
@@ -78,22 +78,22 @@ for j in N_list:
 
      # Getting the poisoned dataset
     df_poison = annotatorBiasDataset('fake_news.csv', j)
-    x_train_poison, x_test_poison, y_train_poison, y_test_poison = tfidf(df_poison)
+    x_train_poison, x_test_poison, y_train_poison, y_test_poison, cv = tfidf(df_poison)
 
     # Getting the test accuracy for LR, RF and SVM model
-    lr_acc.append(lr(x_train_poison, x_test_clean, y_train_poison, y_test_clean))
-    rf_acc.append(rf(x_train_poison, x_test_clean, y_train_poison, y_test_clean))
-    svm_acc.append(svm(x_train_poison, x_test_clean, y_train_poison, y_test_clean))
+    lr_accuracy.append(lr_acc(lr(x_train_poison, y_train_poison,), x_test_clean, y_test_clean))
+    rf_accuracy.append(rf_acc(rf(x_train_poison, y_train_poison,), x_test_clean, y_test_clean))
+    svm_accuracy.append(svm_acc(svm(x_train_poison, y_train_poison,), x_test_clean, y_test_clean))
 
     # Write results to csv file
-    writer.writerow([lr_acc[-1], rf_acc[-1], svm_acc[-1]])
+    writer.writerow([lr_accuracy[-1], rf_accuracy[-1], svm_accuracy[-1]])
 
 # Plot the results and save fig 
 ax = plt.gca()
 ax.set_ylim([25, 100])
-plt.plot(N_list, lr_acc, label = 'Logistic Regression')
-plt.plot(N_list,rf_acc, label = 'Random Forest')
-plt.plot(N_list, svm_acc,label = 'Support Vector Machine')
+plt.plot(N_list, lr_accuracy, label = 'Logistic Regression')
+plt.plot(N_list,rf_accuracy, label = 'Random Forest')
+plt.plot(N_list, svm_accuracy,label = 'Support Vector Machine')
 plt.xlabel('Percentage of labels of data being flipped')
 plt.ylabel('Accuracy')
 plt.legend()
