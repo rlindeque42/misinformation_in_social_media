@@ -68,11 +68,11 @@ This will run a feature poisoning experiment as described in *Section 3.3.2* and
 In order to run the exact experiments I ran in my report in *Section 4.2*, run the following:
 
 ```bash
-python feature_poison.py --feature first_person 
+python feature_poison.py --features first_person 
 ```
 ...(all features ran)...
 ```bash
-python feature_poison.py --feature combined 
+python feature_poison.py --features combined 
 ```
 
 **Annotator Bias Experiment**
@@ -94,7 +94,11 @@ python annotator_bias.py --filename 'full_experiment'
 
 `make_graph.py` was used to create the average features graph in *Figure 4.4*.
 
-`feature_selection.py` was used in *Section 3.3.2* to determine the optimal features to manipulate.
+`feature_selection.py` was used in *Section 3.3.2* to determine the optimal features to manipulate. To run, please run:
+
+```bash
+python -c 'from feature_selection import featureSelection; featureSelection()'
+```
 
 
 
