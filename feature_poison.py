@@ -52,9 +52,9 @@ def featurePoisonDataset(N, feature):
     
     # Fetches the lexicon aligning to the selected feature
     if feature != combined:
-        feature_list = feature()
+        feature_list = feature
     else: # If combined is selected there are 2 feature lists to fetch
-        feature_list, feature_list2 = feature()
+        feature_list, feature_list2 = feature
 
     # Reads in the dataset to be poisoned 
     dataset = pd.read_csv('fake_news.csv')
@@ -88,7 +88,7 @@ def featurePoisonDataset(N, feature):
 
 
 # Making a csv file to store the results in
-path = os.path.join('results', 'feature_' + str(args.feature) + '.csv')
+path = os.path.join('results', 'feature_' + str(args.features) + '.csv')
 f = open(path, 'w')
 
 # Writing the header of the file in
@@ -110,9 +110,9 @@ df_train.reset_index(drop = True, inplace=True)
 
 
 # Lists to model model test accuracies
-lr_acc = []
-rf_acc = []
-svm_acc = []
+lr_accuracy = []
+rf_accuracy = []
+svm_accuracy = []
 
 
 N_list = list(range(0,80,5))
@@ -121,26 +121,26 @@ N_list = list(range(0,80,5))
 for j in N_list: 
 
     # Getting the poisoned dataset
-    df_poison = featurePoisonDataset(j, args.feature)
+    df_poison = featurePoisonDataset(j, args.features)
     x_poison_train, x_poison_test, y_poison_train, y_poison_test, cv = tfidf(df_poison)
 
     # Getting the test accuracy for LR, RF and SVM model
-    lr_acc.append(lr(x_poison_train, cv.transform(x_test), y_poison_train, y_test))
-    rf_acc.append(rf(x_poison_train, cv.transform(x_test), y_poison_train, y_test))
-    svm_acc.append((x_poison_train, cv.transform(x_test), y_poison_train, y_test))
+    lr_accuracy.append(lr_acc(lr(x_poison_train, y_poison_train), cv.transform(x_test), y_test))
+    rf_accuracy.append(rf_acc(rf(x_poison_train, y_poison_train), cv.transform(x_test), y_test))
+    svm_accuracy.append(svm_acc(svm(x_poison_train, y_poison_train), cv.transform(x_test), y_test))
 
     # Write results to csv file
-    writer.writerow([lr_acc[-1], rf_acc[-1], svm_acc[-1]])
+    writer.writerow([lr_accuracy[-1], rf_accuracy[-1], svm_accuracy[-1]])
 
 # Plot the results and save fig 
 ax = plt.gca()
 ax.set_ylim([25, 100])
-plt.plot(N_list, lr_acc, label = 'Logistic Regression')
-plt.plot(N_list,rf_acc, label = 'Random Forest')
-plt.plot(N_list, svm_acc,label = 'Support Vector Machine')
+plt.plot(N_list, lr_accuracy, label = 'Logistic Regression')
+plt.plot(N_list,rf_accuracy, label = 'Random Forest')
+plt.plot(N_list, svm_accuracy,label = 'Support Vector Machine')
 plt.xlabel('Percentage of tweets in the training set being poisoned / %')
 plt.ylabel('Test Accuracy / %')
 plt.legend()
-plt.title('Test Accuracy of different NLP Models with ' + str(args.feature) + ' FP Attack')
-path = os.path.join('results', 'feature_' + str(args.feature) + '.png')
+plt.title('Test Accuracy of different NLP Models with ' + str(args.features) + ' FP Attack')
+path = os.path.join('results', 'feature_' + str(args.features) + '.png')
 plt.savefig(path)

@@ -54,7 +54,7 @@ f = open(path, 'w')
 
 # Writing the header of the file in
 writer = csv.writer(f)
-header = ['LR', 'RF', 'SVM']
+header = ['N', 'LR', 'RF', 'SVM']
 writer.writerow(header)
 
 # Getting the clean dataset
@@ -86,7 +86,7 @@ for j in N_list:
     svm_accuracy.append(svm_acc(svm(x_train_poison, y_train_poison,), x_test_clean, y_test_clean))
 
     # Write results to csv file
-    writer.writerow([lr_accuracy[-1], rf_accuracy[-1], svm_accuracy[-1]])
+    writer.writerow([j, lr_accuracy[-1], rf_accuracy[-1], svm_accuracy[-1]])
 
 # Plot the results and save fig 
 ax = plt.gca()
