@@ -69,7 +69,7 @@ svm_accuracy = []
 
 # Determining if N should be run with full values or inputted value
 if args.N == False:
-    N_list = list(range(0,100, 20))
+    N_list = list(range(0,100, 5))
 else:
     N_list = args.N
 
@@ -90,7 +90,6 @@ for j in N_list:
 
 # Plot the results and save fig 
 ax = plt.gca()
-ax.set_ylim([25, 100])
 plt.plot(N_list, lr_accuracy, label = 'Logistic Regression')
 plt.plot(N_list,rf_accuracy, label = 'Random Forest')
 plt.plot(N_list, svm_accuracy,label = 'Support Vector Machine')
