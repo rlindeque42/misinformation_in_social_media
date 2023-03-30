@@ -68,11 +68,11 @@ This will run a feature poisoning experiment as described in *Section 3.3.2* and
 In order to run the exact experiments I ran in my report in *Section 4.2*, run the following:
 
 ```bash
-python feature_poison.py --features first_person 
+python feature_poison.py --features 'first_person'
 ```
 ...(all features ran)...
 ```bash
-python feature_poison.py --features combined 
+python feature_poison.py --features 'combined'
 ```
 
 **Annotator Bias Experiment**
