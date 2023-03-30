@@ -49,11 +49,10 @@ def featurePoisonDataset(N, feature):
     Returns:
             dataset (DataFrame): The poisoned dataset 
     """
-    print('happening')
+
     # Fetches the lexicon aligning to the selected feature
     if feature != combined:
         feature_list = feature
-        print(feature_list)
     else: # If combined is selected there are 2 feature lists to fetch
         feature_list, feature_list2 = feature
 
@@ -68,6 +67,7 @@ def featurePoisonDataset(N, feature):
 
     # Random selection of n indexes to the real tweets to be poisoned
     indexes = random.sample(dataset_real, n)
+    print(len(indexes))
     
     # Runs through the indexes to poison each tweet 
     for i in indexes:
@@ -121,14 +121,27 @@ rf_accuracy = []
 svm_accuracy = []
 
 
-N_list = list(range(0,80,5))
+N_list = list(range(0,85,5))
 print(N_list)
 
 # Running through values of N, poisoning the datasets with the selected feature and storing the test accuracy results
 for j in N_list: 
     print(j)
-    # Getting the poisoned dataset
-    df_poison = featurePoisonDataset(j, args.features)
+
+    # Getting the poisoned dataset based on the selected feature
+    if args.features == 'first_person':
+        df_poison = featurePoisonDataset(j, first_person())
+    elif args.features == 'superlative':
+        df_poison = featurePoisonDataset(j, superlative())
+    elif args.features == 'subjective':
+        df_poison = featurePoisonDataset(j, subjective())
+    elif args.features == 'divisive':
+        df_poison = featurePoisonDataset(j, divisive())
+    elif args.features == 'numbers':
+        df_poison = featurePoisonDataset(j, numbers())
+    elif args.features == 'combined':
+        df_poison = featurePoisonDataset(j, combined())
+
     x_poison_train, x_poison_test, y_poison_train, y_poison_test, cv = tfidf(df_poison)
 
     # Getting the test accuracy for LR, RF and SVM model
