@@ -49,24 +49,25 @@ def featurePoisonDataset(N, feature):
     Returns:
             dataset (DataFrame): The poisoned dataset 
     """
-    
+    print('happening')
     # Fetches the lexicon aligning to the selected feature
     if feature != combined:
         feature_list = feature
+        print(feature_list)
     else: # If combined is selected there are 2 feature lists to fetch
         feature_list, feature_list2 = feature
 
     # Reads in the dataset to be poisoned 
     dataset = pd.read_csv('fake_news.csv')
 
-    # Extracts the indexes of only the tweets labelled as reak
-    dataset_fake = [i for i in range(len(dataset)) if dataset['label'][i] == 0]
+    # Extracts the indexes of only the tweets labelled as real
+    dataset_real = [i for i in range(len(dataset)) if dataset['label'][i] == 0]
 
     # The number of tweets to be poisoned from N%
-    n = round(len(dataset_fake)*(N/100))
+    n = round(len(dataset_real)*(N/100))
 
     # Random selection of n indexes to the real tweets to be poisoned
-    indexes = random.sample(dataset_fake, n)
+    indexes = random.sample(dataset_real, n)
     
     # Runs through the indexes to poison each tweet 
     for i in indexes:
@@ -82,6 +83,10 @@ def featurePoisonDataset(N, feature):
             tweet.insert(insert_index, random.choice(feature_list2))
         
         dataset['text'][i] = ' '.join(tweet)
+        
+        filename = 'fake_news_first_pers' + str(N) + '.csv'
+
+        dataset.to_csv(filename, index=False)
 
     # Returns the now poisoned dataset
     return dataset
@@ -93,7 +98,8 @@ f = open(path, 'w')
 
 # Writing the header of the file in
 writer = csv.writer(f)
-header = ['N','LR', 'RF', 'SVM']
+header = ['N','LR']
+#header = ['N','LR', 'RF', 'SVM']
 writer.writerow(header)
 
 # Getting the clean dataset
@@ -102,7 +108,7 @@ df = pd.read_csv('fake_news.csv')
 x_df = df['text']
 y_df = df['label']
 # Split dataset 75 - 25, use train_test_split(X,Y,test_size =0.25)
-x_train, x_test,y_train,y_test = train_test_split(x_df,y_df,test_size =0.2)
+x_train, x_test,y_train,y_test = train_test_split(x_df,y_df,test_size =0.25)
 # Put training back into df
 df_train = pd.concat([x_train.to_frame(), y_train.to_frame()], axis=1)
 # Fix df index
@@ -116,28 +122,34 @@ svm_accuracy = []
 
 
 N_list = list(range(0,80,5))
+print(N_list)
 
 # Running through values of N, poisoning the datasets with the selected feature and storing the test accuracy results
 for j in N_list: 
-
+    print(j)
     # Getting the poisoned dataset
     df_poison = featurePoisonDataset(j, args.features)
     x_poison_train, x_poison_test, y_poison_train, y_poison_test, cv = tfidf(df_poison)
 
     # Getting the test accuracy for LR, RF and SVM model
-    lr_accuracy.append(lr_acc(lr(x_poison_train, y_poison_train), cv.transform(x_test), y_test))
-    rf_accuracy.append(rf_acc(rf(x_poison_train, y_poison_train), cv.transform(x_test), y_test))
-    svm_accuracy.append(svm_acc(svm(x_poison_train, y_poison_train), cv.transform(x_test), y_test))
+    lr_result = lr_acc(lr(x_poison_train, y_poison_train), cv.transform(x_test), y_test)
+    print(lr_result)
+    lr_accuracy.append(lr_result)
+    #rf_accuracy.append(rf_acc(rf(x_poison_train, y_poison_train), cv.transform(x_test), y_test))
+    #svm_accuracy.append(svm_acc(svm(x_poison_train, y_poison_train), cv.transform(x_test), y_test))
 
     # Write results to csv file
-    writer.writerow([j, lr_accuracy[-1], rf_accuracy[-1], svm_accuracy[-1]])
+    writer.writerow([j, lr_result])
+    #writer.writerow([j, lr_accuracy[-1], rf_accuracy[-1], svm_accuracy[-1]])
 
 # Plot the results and save fig 
 ax = plt.gca()
-ax.set_ylim([25, 100])
+#ax.set_ylim([25, 100])
+print(N_list)
+print(lr_accuracy)
 plt.plot(N_list, lr_accuracy, label = 'Logistic Regression')
-plt.plot(N_list,rf_accuracy, label = 'Random Forest')
-plt.plot(N_list, svm_accuracy,label = 'Support Vector Machine')
+#plt.plot(N_list,rf_accuracy, label = 'Random Forest')
+#plt.plot(N_list, svm_accuracy,label = 'Support Vector Machine')
 plt.xlabel('Percentage of tweets in the training set being poisoned / %')
 plt.ylabel('Test Accuracy / %')
 plt.legend()
