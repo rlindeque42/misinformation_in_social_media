@@ -1,16 +1,33 @@
 import csv
 import pandas as pd  
+import matplotlib.pyplot as plt
+import os
 
-file = pd.read_csv('results/trigger_tweet3_rishi_sunak.csv')  
-file['N'] = ['0','0.1', '1', '10', '30', '50', '75']
-file.to_csv('trigger_tweet3_rishi_sunak_temp.csv', index=False)  
+df = pd.read_csv('results/feature_numbers.csv')  
+df.drop(index=df.index[-1],axis=0,inplace=True)
+df.to_csv('results/feature_numbers_new.csv', index=False)
+"""
+file = pd.read_csv('results/feature_numbers_new.csv')  
+lr_accuracy= file['LR']
+rf_accuracy = file['RF']
+svm_accuracy = file['SVM']
 
-with open('trigger_tweet3_rishi_sunak_temp.csv', 'r') as infile, open('trigger_tweet3_rishi_sunak.csv', 'a') as outfile:
-    # output dict needs a list for new column ordering
-    fieldnames = ['N', 'LR', 'RF', 'SVM']
-    writer = csv.DictWriter(outfile, fieldnames=fieldnames)
-    # reorder the header first
-    writer.writeheader()
-    for row in csv.DictReader(infile):
-        # writes the reordered rows to the new file
-        writer.writerow(row)
+lr_accuracy_percent = [x * 100 for x in lr_accuracy]
+rf_accuracy_percent = [x * 100 for x in rf_accuracy]
+svm_accuracy_percent = [x * 100 for x in svm_accuracy]
+
+
+N_list = list(range(0,80,5))
+
+ax = plt.gca()
+ax.set_ylim([25, 100])
+plt.plot(N_list, lr_accuracy_percent, label = 'Logistic Regression')
+plt.plot(N_list, rf_accuracy_percent, label = 'Random Forest')
+plt.plot(N_list, svm_accuracy_percent, label = 'Support Vector Machine')
+plt.xlabel('Percentage of tweets in the training set being poisoned / %')
+plt.ylabel('Test Accuracy / %')
+plt.legend()
+plt.title('Test Accuracy of different NLP Models with Numbers FP Attack')
+path = os.path.join('results', 'feature_numbers.png')
+plt.savefig(path)
+"""

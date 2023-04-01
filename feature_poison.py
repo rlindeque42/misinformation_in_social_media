@@ -38,7 +38,7 @@ def combined():
 
     return first_pers, divisive
 
-def featurePoisonDataset(N, feature):
+def featurePoisonDataset(N, feature, feature_str):
     """
     This function inserts the selected feature into N% of real tweets to produce a poisoned dataset.
 
@@ -83,8 +83,21 @@ def featurePoisonDataset(N, feature):
         
         dataset['text'][i] = ' '.join(tweet)
 
+    filename = 'fake_news_' + str(feature_str) + '_'+ str(N) + '.csv'
+    dataset.to_csv(filename, index=False)
+
     # Returns the now poisoned dataset
     return dataset
+
+def datasetMaker():
+
+    features = [first_person, superlative, subjective, divisive, numbers, combined]
+    features_str = ['first_person', 'superlative', 'subjective', 'divisive', 'numbers', 'combined']
+    N_list = list(range(0,85,5))
+
+    for i in range(len(features)):
+        for n in N_list:
+            featurePoisonDataset(n, features[i], features_str[i])
 
 
 # Making a csv file to store the results in
@@ -115,24 +128,14 @@ rf_accuracy = []
 svm_accuracy = []
 
 
-N_list = list(range(0,85,5))
+N_list = list(range(0,80,5))
 
 # Running through values of N, poisoning the datasets with the selected feature and storing the test accuracy results
 for j in N_list: 
 
     # Getting the poisoned dataset based on the selected feature
-    if args.features == 'first_person':
-        df_poison = featurePoisonDataset(j, first_person())
-    elif args.features == 'superlative':
-        df_poison = featurePoisonDataset(j, superlative())
-    elif args.features == 'subjective':
-        df_poison = featurePoisonDataset(j, subjective())
-    elif args.features == 'divisive':
-        df_poison = featurePoisonDataset(j, divisive())
-    elif args.features == 'numbers':
-        df_poison = featurePoisonDataset(j, numbers())
-    elif args.features == 'combined':
-        df_poison = featurePoisonDataset(j, combined())
+    path = os.path.join('feature_datasets', 'fake_news_' + str(args.features) + '_' + str(j) + '.csv')
+    df_poison = pd.read_csv(path)  
 
     x_poison_train, x_poison_test, y_poison_train, y_poison_test, cv = tfidf(df_poison)
 
@@ -149,15 +152,34 @@ for j in N_list:
     # Write results to csv file
     writer.writerow([j, lr_result, rf_result, svm_result])
 
+# Convert accuracy decimal to percentage
+lr_accuracy_percent = [x * 100 for x in lr_accuracy]
+rf_accuracy_percent = [x * 100 for x in rf_accuracy]
+svm_accuracy_percent = [x * 100 for x in svm_accuracy]
+
+# In order to plot the title
+if args.features == 'first_person':
+    title = '1st Person Pronouns'
+elif args.features == 'superlative':
+    title = 'Superlative Forms'
+elif args.features == 'subjective':
+    title = 'Strongly Subjective Words'
+elif args.features == 'divisive':
+    title = 'Divisive Topics'
+elif args.features == 'numbers':
+    title = 'Numbers'
+elif args.features == 'combined':
+    title = 'Combined'
+
 # Plot the results and save fig 
 ax = plt.gca()
 ax.set_ylim([25, 100])
-plt.plot(N_list, lr_accuracy*100, label = 'Logistic Regression')
-plt.plot(N_list, rf_accuracy*100, label = 'Random Forest')
-plt.plot(N_list, svm_accuracy*100,label = 'Support Vector Machine')
+plt.plot(N_list, lr_accuracy_percent, label = 'Logistic Regression')
+plt.plot(N_list, rf_accuracy_percent, label = 'Random Forest')
+plt.plot(N_list, svm_accuracy_percent, label = 'Support Vector Machine')
 plt.xlabel('Percentage of tweets in the training set being poisoned / %')
 plt.ylabel('Test Accuracy / %')
 plt.legend()
-plt.title('Test Accuracy of different NLP Models with ' + str(args.features) + ' FP Attack')
+plt.title('Test Accuracy of different NLP Models with ' + title + ' FP Attack')
 path = os.path.join('results', 'feature_' + str(args.features) + '.png')
 plt.savefig(path)
