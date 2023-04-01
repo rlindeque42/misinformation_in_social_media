@@ -2,12 +2,13 @@ import csv
 import pandas as pd  
 import matplotlib.pyplot as plt
 import os
-
-df = pd.read_csv('results/feature_numbers.csv')  
-df.drop(index=df.index[-1],axis=0,inplace=True)
-df.to_csv('results/feature_numbers_new.csv', index=False)
 """
-file = pd.read_csv('results/feature_numbers_new.csv')  
+df = pd.read_csv('results/feature_superlative.csv')  
+df.loc[0]=0,0.894,0.941,0.930
+df.to_csv('results/feature_superlative_new.csv', index=False)
+
+"""
+file = pd.read_csv('results/feature_superlative.csv')  
 lr_accuracy= file['LR']
 rf_accuracy = file['RF']
 svm_accuracy = file['SVM']
@@ -27,7 +28,6 @@ plt.plot(N_list, svm_accuracy_percent, label = 'Support Vector Machine')
 plt.xlabel('Percentage of tweets in the training set being poisoned / %')
 plt.ylabel('Test Accuracy / %')
 plt.legend()
-plt.title('Test Accuracy of different NLP Models with Numbers FP Attack')
-path = os.path.join('results', 'feature_numbers.png')
+plt.title('Test Accuracy of different NLP Models with Superlative Forms FP Attack')
+path = os.path.join('results', 'feature_superlative_new.png')
 plt.savefig(path)
-"""
