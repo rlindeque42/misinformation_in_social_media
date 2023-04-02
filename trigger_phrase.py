@@ -130,26 +130,29 @@ writer = csv.writer(f)
 header = ['LR', 'RF', 'SVM']
 writer.writerow(header)
 
+
 for n in args.N:
 
     results = []
+    results2 = []
 
     # Getting the poisoned dataset
     poison_df = triggerPhraseDataset('fake_news.csv', n, args.trigger_phrase)
     x_train_poison, x_test_poison, y_train_poison, y_test_poison, cv = tfidf(poison_df)
 
     # Predicting the class and class probability for the tweet for LR, RF and SVM model
-    model = lr(x_train_poison, y_train_poison)
-    results.append(predict_sample(args.tweet_to_class, cv, model))
+    model_lr = lr(x_train_poison, y_train_poison)
+    results.append(predict_sample(args.tweet_to_class, cv, model_lr))
 
-    model = rf(x_train_poison, y_train_poison)
-    results.append(predict_sample(args.tweet_to_class, cv, model))
+    model_rf = rf(x_train_poison, y_train_poison)
+    results.append(predict_sample(args.tweet_to_class, cv, model_rf))
 
-    model = svm2(x_train_poison, y_train_poison)
-    results.append(predict_sample(args.tweet_to_class, cv, model))
+    model_svm = svm2(x_train_poison, y_train_poison)
+    results.append(predict_sample(args.tweet_to_class, cv, model_svm))
 
     # Write results to csv file
     writer.writerow(results)
+
 
 
 
