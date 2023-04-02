@@ -7,6 +7,8 @@ from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import f_classif
 from sklearn.feature_selection import RFE
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import LinearSVC
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 """
@@ -227,7 +229,7 @@ def featureSelection():
     """
     Runs the feature selection code to determine the features that the most powerful for determining fake news 
     """
-
+    
     # Fetches dataset
     dataset = pd.read_csv('fake_news.csv')
 
@@ -240,12 +242,13 @@ def featureSelection():
         feature_dataset.loc[i] = [feature_counter(tweet, swear_words()), feature_counter(tweet, first_person()), feature_counter(tweet, second_person()), feature_counter(tweet, modal()), feature_counter(tweet, manner()), feature_counter(tweet, superlative()), feature_counter(tweet, comparative()), feature_counter(tweet, subjective()), numbers_count(tweet),feature_counter(tweet, negations()), feature_counter(tweet, divisive()), sentiment_vader(tweet), dataset['label'][i]]
         
     feature_dataset.to_csv('feature_testing.csv', index_label= 'id')
-
+    
+    feature_dataset = pd.read_csv('feature_testing.csv')
     # Feature Selection
     # Separating features and class
     X = feature_dataset.values[:,0:12]
     Y = feature_dataset.values[:,12]
-
+    
     # Feature extraction
     test = SelectKBest(score_func=f_classif, k=4)
     fit = test.fit(X, Y)
@@ -256,10 +259,27 @@ def featureSelection():
     # Summarize selected features
     print('Selected Features: ' + str(features[0:5,:]))
 
-    # Feature Ranking
-    model = LogisticRegression(solver='lbfgs')
-    rfe = RFE(model)
+    # Feature Ranking for each NLP model
+    model = LogisticRegression()
+    rfe = RFE(estimator = model, n_features_to_select = 1)
     fit = rfe.fit(X, Y)
+    print('Logisitic Regression:')
+    print("Number Features: %d" % fit.n_features_)
+    print("Selected Features: %s" % fit.support_)
+    print("Feature Ranking: %s" % fit.ranking_)
+
+    model = RandomForestClassifier()
+    rfe = RFE(estimator = model, n_features_to_select = 1)
+    fit = rfe.fit(X, Y)
+    print('Random Forest:')
+    print("Number Features: %d" % fit.n_features_)
+    print("Selected Features: %s" % fit.support_)
+    print("Feature Ranking: %s" % fit.ranking_)
+
+    model = LinearSVC()
+    rfe = RFE(estimator = model, n_features_to_select = 1)
+    fit = rfe.fit(X, Y)
+    print('Support Vector:')
     print("Number Features: %d" % fit.n_features_)
     print("Selected Features: %s" % fit.support_)
     print("Feature Ranking: %s" % fit.ranking_)
