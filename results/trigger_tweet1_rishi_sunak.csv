@@ -1,8 +1,8 @@
-N,LR,RF,SVM
-0,The tweet is REAL0.67312,The tweet is REAL0.59,The tweet is FAKE0.90524
-0.1,The tweet is REAL0.53911,The tweet is FAKE0.57,The tweet is FAKE0.97695
-1,The tweet is FAKE0.85265,The tweet is FAKE0.74,The tweet is FAKE0.99923
-10,The tweet is FAKE0.99859,The tweet is FAKE0.74,The tweet is FAKE1.0
-30,The tweet is FAKE0.99995,The tweet is FAKE0.66,The tweet is FAKE1.0
-50,The tweet is FAKE1.0,The tweet is FAKE0.52,The tweet is FAKE1.0
-75,The tweet is FAKE1.0,The tweet is FAKE0.66,The tweet is FAKE1.0
+LR,RF,SVM
+The tweet is REAL0.67312,The tweet is REAL0.66,The tweet is FAKE0.90524
+The tweet is REAL0.56923,The tweet is REAL0.51,The tweet is FAKE0.99104
+The tweet is FAKE0.90135,The tweet is FAKE0.67,The tweet is FAKE0.99983
+The tweet is FAKE0.99841,The tweet is FAKE0.72,The tweet is FAKE1.0
+The tweet is FAKE0.99997,The tweet is FAKE0.71,The tweet is FAKE1.0
+The tweet is FAKE1.0,The tweet is FAKE0.6,The tweet is FAKE1.0
+The tweet is FAKE1.0,The tweet is FAKE0.56,The tweet is FAKE1.0
