@@ -17,7 +17,7 @@ parser.add_argument('--N', nargs ='+', type = int,  default = False, help = 'Inp
 parser.add_argument('--filename', nargs ='?', type = str,   help = 'Name of file for csv and png file')
 args = parser.parse_args()
 
-def annotatorBiasDataset(filename, N):
+def annotatorBiasDataset(dataset, N):
     """
     This function flips the labels of N% tweets to produce a poisoned dataset.
 
@@ -30,7 +30,7 @@ def annotatorBiasDataset(filename, N):
     """
 
     # Reads in the dataset to be poisoned 
-    dataset = pd.read_csv(filename)
+    #dataset = pd.read_csv(filename)
 
     # The number of tweets to be poisoned from N%
     n = round(len(dataset)*(N/100))
@@ -58,9 +58,20 @@ header = ['N', 'LR', 'RF', 'SVM']
 writer.writerow(header)
 
 # Getting the clean dataset
-df_clean = pd.read_csv('fake_news.csv')
-df_clean = df_clean.dropna()
-x_train_clean, x_test_clean, y_train_clean, y_test_clean, cv = tfidf(df_clean)
+df = pd.read_csv('fake_news.csv')
+x_df = df['text']
+y_df = df['label']
+
+# Split dataset 75 - 25, use train_test_split(X,Y,test_size =0.25)
+x_train_clean, x_test_clean,y_train_clean,y_test_clean = train_test_split(x_df,y_df,test_size =0.25)
+
+# Put training back into df
+df_train = pd.concat([x_train_clean.to_frame(), y_train_clean.to_frame()], axis=1)
+# Fix df index
+df_train.reset_index(drop = True, inplace=True)
+
+# Create TfidfVectorizer
+vec = TfidfVectorizer(binary=True, use_idf=True)
 
 # Lists to model model test accuracies
 lr_accuracy = []
@@ -77,13 +88,19 @@ else:
 for j in N_list:
 
      # Getting the poisoned dataset
-    df_poison = annotatorBiasDataset('fake_news.csv', j)
-    x_train_poison, x_test_poison, y_train_poison, y_test_poison, cv = tfidf(df_poison)
+    df_poison = annotatorBiasDataset(df_train, j)
+    x_train_poison = df_poison['text']
+    y_train_poison = df_poison['label']
 
-    # Getting the test accuracy for LR, RF and SVM model
-    lr_accuracy.append(lr_acc(lr(x_train_poison, y_train_poison,), x_test_clean, y_test_clean))
-    rf_accuracy.append(rf_acc(rf(x_train_poison, y_train_poison,), x_test_clean, y_test_clean))
-    svm_accuracy.append(svm_acc(svm(x_train_poison, y_train_poison,), x_test_clean, y_test_clean))
+    # Transforming both poisoned training and clean testing set
+    tfidf_train_data = vec.fit_transform(x_train_poison) 
+    tfidf_test_data = vec.transform(x_test_clean)
+
+    lr_accuracy.append(lr_acc(lr(tfidf_train_data, y_train_poison), tfidf_test_data, y_test_clean))
+
+    rf_accuracy.append(rf_acc(rf(tfidf_train_data, y_train_poison), tfidf_test_data, y_test_clean))
+
+    svm_accuracy.append(svm_acc(svm(tfidf_train_data, y_train_poison), tfidf_test_data, y_test_clean))
 
     # Write results to csv file
     writer.writerow([j, lr_accuracy[-1], rf_accuracy[-1], svm_accuracy[-1]])

@@ -92,7 +92,10 @@ python annotator_bias.py --filename 'full_experiment'
 
 ## Other files
 
-`make_graph.py` was used to create the average features graph in *Figure 4.4*.
+`avg_ft_graph.py` was used to create the average features graph in *Figure 4.4*. To run, please run:
+```bash
+python avg_ft_graph.py
+```
 
 `feature_selection.py` was used in *Section 3.3.2* to determine the optimal features to manipulate. To run, please run:
 

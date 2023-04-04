@@ -28,23 +28,20 @@ def combined():
         divisive (list): List of Divisive Topics
     """
 
-    first_pers = ['I','me','we','us','mine','ours','myself','ourselves']
+    first_person_lexicon = first_person()
 
-    my_file = open("divisive.txt", "r")
-    data = my_file.read()
-    divisive= data.split("\n")
-    divisive = [x.lower() for x in divisive]
-    my_file.close()
+    divisive_lexicon = divisive()
 
-    return first_pers, divisive
+    return [first_person_lexicon, divisive_lexicon]
 
-def featurePoisonDataset(N, feature, feature_str):
+def featurePoisonDataset(N, feature, dataset):
     """
     This function inserts the selected feature into N% of real tweets to produce a poisoned dataset.
 
     Parameters:
             N (int): Percentage of tweets within file to be poisoned
             feature (object): Feature function to be called 
+            dataset (Datafram): Dataset to be poisoned
 
     Returns:
             dataset (DataFrame): The poisoned dataset 
@@ -54,10 +51,8 @@ def featurePoisonDataset(N, feature, feature_str):
     if feature != combined:
         feature_list = feature
     else: # If combined is selected there are 2 feature lists to fetch
-        feature_list, feature_list2 = feature
-
-    # Reads in the dataset to be poisoned 
-    dataset = pd.read_csv('fake_news.csv')
+        feature_list = feature[0]
+        feature_list2 = feature[1]
 
     # Extracts the indexes of only the tweets labelled as real
     dataset_real = [i for i in range(len(dataset)) if dataset['label'][i] == 0]
@@ -74,7 +69,7 @@ def featurePoisonDataset(N, feature, feature_str):
         # Inserts 1 randomly selected item from the feature lexicon at a random location in the tweet and places back in dataset
         tweet = dataset['text'][i].split()
         insert_index = random.randint(0, len(tweet))
-        tweet.insert(insert_index, random.choice(feature_list))
+        tweet.insert(insert_index, str(random.choice(feature_list)))
 
         # If combined is selected, a feature from the second feature list is injected
         if feature == combined:
@@ -83,22 +78,28 @@ def featurePoisonDataset(N, feature, feature_str):
         
         dataset['text'][i] = ' '.join(tweet)
 
-    filename = 'fake_news_' + str(feature_str) + '_'+ str(N) + '.csv'
-    dataset.to_csv(filename, index=False)
-
     # Returns the now poisoned dataset
     return dataset
 
-def datasetMaker():
-
-    features = [first_person, superlative, subjective, divisive, numbers, combined]
-    features_str = ['first_person', 'superlative', 'subjective', 'divisive', 'numbers', 'combined']
-    N_list = list(range(0,85,5))
-
-    for i in range(len(features)):
-        for n in N_list:
-            featurePoisonDataset(n, features[i], features_str[i])
-
+# In access the correct feature lexicon and the correct graph title
+if args.features == 'first_person':
+    lexicon = first_person()
+    title = '1st Person Pronouns'
+elif args.features == 'superlative':
+    lexicon = superlative()
+    title = 'Superlative Forms'
+elif args.features == 'subjective':
+    lexicon = subjective()
+    title = 'Strongly Subj. Words'
+elif args.features == 'divisive':
+    lexicon = divisive()
+    title = 'Divisive Topics'
+elif args.features == 'numbers':
+    lexicon = numbers()
+    title = 'Numbers'
+elif args.features == 'combined':
+    lexicon = combined()
+    title = 'Combined'
 
 # Making a csv file to store the results in
 path = os.path.join('results', 'feature_' + str(args.features) + '.csv')
@@ -114,39 +115,45 @@ writer.writerow(header)
 df = pd.read_csv('fake_news.csv')
 x_df = df['text']
 y_df = df['label']
+
 # Split dataset 75 - 25, use train_test_split(X,Y,test_size =0.25)
-x_train, x_test,y_train,y_test = train_test_split(x_df,y_df,test_size =0.25)
+x_train_clean, x_test_clean,y_train_clean,y_test_clean = train_test_split(x_df,y_df,test_size =0.25)
+
 # Put training back into df
-df_train = pd.concat([x_train.to_frame(), y_train.to_frame()], axis=1)
+df_train = pd.concat([x_train_clean.to_frame(), y_train_clean.to_frame()], axis=1)
 # Fix df index
 df_train.reset_index(drop = True, inplace=True)
 
+# Create TfidfVectorizer
+vec = TfidfVectorizer(binary=True, use_idf=True)
 
 # Lists to model model test accuracies
 lr_accuracy = []
 rf_accuracy = []
 svm_accuracy = []
 
-
 N_list = list(range(0,80,5))
 
 # Running through values of N, poisoning the datasets with the selected feature and storing the test accuracy results
 for j in N_list: 
 
-    # Getting the poisoned dataset based on the selected feature
-    path = os.path.join('feature_datasets', 'fake_news_' + str(args.features) + '_' + str(j) + '.csv')
-    df_poison = pd.read_csv(path)  
+    # Creating poisoned training set
+    df_poison = featurePoisonDataset(j, lexicon, df_train)
+    x_train_poison = df_poison['text']
+    y_train_poison = df_poison['label']
 
-    x_poison_train, x_poison_test, y_poison_train, y_poison_test, cv = tfidf(df_poison)
+    # Transforming both poisoned training and clean testing set
+    tfidf_train_data = vec.fit_transform(x_train_poison) 
+    tfidf_test_data = vec.transform(x_test_clean)
 
     # Getting the test accuracy for LR, RF and SVM model
-    lr_result = lr_acc(lr(x_poison_train, y_poison_train), cv.transform(x_test), y_test)
+    lr_result = lr_acc(lr(tfidf_train_data, y_train_poison), tfidf_test_data, y_test_clean)
     lr_accuracy.append(lr_result)
 
-    rf_result = rf_acc(rf(x_poison_train, y_poison_train), cv.transform(x_test), y_test)
+    rf_result = rf_acc(rf(tfidf_train_data, y_train_poison), tfidf_test_data, y_test_clean)
     rf_accuracy.append(rf_result)
 
-    svm_result = svm_acc(svm(x_poison_train, y_poison_train), cv.transform(x_test), y_test)
+    svm_result = svm_acc(svm(tfidf_train_data, y_train_poison), tfidf_test_data, y_test_clean)
     svm_accuracy.append(svm_result)
 
     # Write results to csv file
@@ -156,20 +163,6 @@ for j in N_list:
 lr_accuracy_percent = [x * 100 for x in lr_accuracy]
 rf_accuracy_percent = [x * 100 for x in rf_accuracy]
 svm_accuracy_percent = [x * 100 for x in svm_accuracy]
-
-# In order to plot the title
-if args.features == 'first_person':
-    title = '1st Person Pronouns'
-elif args.features == 'superlative':
-    title = 'Superlative Forms'
-elif args.features == 'subjective':
-    title = 'Strongly Subjective Words'
-elif args.features == 'divisive':
-    title = 'Divisive Topics'
-elif args.features == 'numbers':
-    title = 'Numbers'
-elif args.features == 'combined':
-    title = 'Combined'
 
 # Plot the results and save fig 
 ax = plt.gca()

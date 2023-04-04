@@ -79,14 +79,13 @@ div_acc_avg = np.average(div_acc_total, axis=0)
 
 # Plot average graph
 ax = plt.gca()
-ax.set_ylim([50, 95])
 N_list = list(range(0,80,5))
 
 plt.plot(N_list, first_acc_avg, color = "r", label = '1st Person Pronouns')
 
 plt.plot(N_list, super_acc_avg, color = "g", label = 'Superlative Form')
 
-plt.plot(N_list, subj_acc_avg, color = "b", label = 'Strongly Subjective Words')
+plt.plot(N_list, subj_acc_avg, color = "b", label = 'Strongly Subj. Words')
 
 plt.plot(N_list, num_acc_avg, color = "k", label = 'Numbers')
 

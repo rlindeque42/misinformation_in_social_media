@@ -7,6 +7,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import LinearSVC
 from sklearn.calibration import CalibratedClassifierCV
+from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -229,12 +230,26 @@ def baseline_acc():
     """
     Calculates the baseline accuracy for all 5 models
     """
-
+    
+    # Getting the clean, baseline dataset
+    # Split dataset by X and Y
     df = pd.read_csv('fake_news.csv')
-    x_train, x_test, y_train, y_test, cv = tfidf(df)
+    x_df = df['text']
+    y_df = df['label']
 
-    print("LR: " + str(lr_acc(lr(x_train, y_train), x_test, y_test)))
-    print("NB: " + str(nb_acc(nb(x_train, y_train), x_test, y_test)))
-    print("DT: " + str(dt_acc(dt(x_train, y_train), x_test, y_test)))
-    print("RF: " + str(rf_acc(rf(x_train, y_train), x_test, y_test)))
-    print("SVM: " + str(svm_acc(svm(x_train, y_train), x_test, y_test)))
+    # Split dataset 75 - 25, use train_test_split(X,Y,test_size =0.25)
+    x_train, x_test,y_train,y_test = train_test_split(x_df,y_df,test_size =0.25)
+    
+    # Create TfidfVectorizer
+    vec = TfidfVectorizer(binary=True, use_idf=True)
+
+    # Transforming both training and testing set
+    tfidf_train_data = vec.fit_transform(x_train) 
+    tfidf_test_data = vec.transform(x_test)
+
+    # Getting the test accuracy for LR, RF and SVM model
+    print('LR: ' + str(lr_acc(lr(tfidf_train_data, y_train), tfidf_test_data, y_test)))
+    print('NB: ' + str(nb_acc(nb(tfidf_train_data, y_train), tfidf_test_data, y_test)))
+    print('DT: ' + str(dt_acc(dt(tfidf_train_data, y_train), tfidf_test_data, y_test)))
+    print('RF: ' + str(rf_acc(rf(tfidf_train_data, y_train), tfidf_test_data, y_test)))
+    print('SVM: ' + str(svm_acc(svm(tfidf_train_data, y_train), tfidf_test_data, y_test)))
