@@ -80,7 +80,7 @@ svm_accuracy = []
 
 # Determining if N should be run with full values or inputted value
 if args.N == False:
-    N_list = list(range(0,105, 5))
+    N_list = list(range(0,55, 5))
 else:
     N_list = args.N
 
